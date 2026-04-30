@@ -1,11 +1,69 @@
-Roommate Expense Manager - production-ready merged UI + logic
+# 💸 Roommate Expenses Manager
 
-Open through a local server (not file://) because the app uses ES modules and Firebase CDN imports.
+A lightweight, production-ready web app to track, split, and manage shared expenses between roommates.
 
-Core changes:
-- Unified mobile-first navbar
-- Animated theme toggle
-- Sidebar across all pages
-- Expense form now uses Category instead of Paid By
-- Current logged-in user is treated as the default payer internally
-- Excel export matches a sheet-style format with people as columns and totals row
+Built using **HTML, CSS, Vanilla JavaScript**, and **Firebase (Auth + Firestore)** — no frameworks, no backend server.
+
+---
+
+## 🚀 Live Demo
+👉 https://YOUR_USERNAME.github.io/roommate-expense-manager/
+
+---
+
+## 📌 Features
+
+- 🔐 Username-based login (Firebase Authentication)
+- 👥 Manage roommates dynamically
+- 💰 Add & track shared expenses
+- 🧾 Category-based expense tracking (no payer selection required)
+- ⚖️ Automatic expense splitting
+- 📊 Monthly dashboard with:
+  - Total expenses
+  - Average spend
+  - Entry count
+  - Net balance per person
+- 🤝 Settlement calculation (who owes whom)
+- 📥 Excel export (sheet-style format with totals)
+- 🌙 Light / Dark mode toggle with animation
+- 📱 Fully responsive (mobile-first UI)
+- 🎯 Default user automatically included in splits
+
+---
+
+## 🧱 Tech Stack
+
+- **Frontend:** HTML5, CSS3, Vanilla JavaScript (ES Modules)
+- **Backend:** Firebase Authentication + Firestore
+- **Hosting:** GitHub Pages
+- **Libraries:**
+  - Firebase SDK (v9 modular)
+  - SheetJS (XLSX export)
+
+---
+
+## 📂 Project Structure
+roommate-expense-manager/
+│
+├── index.html # Login page
+├── dashboard.html # Overview & summary
+├── roommates.html # Manage members
+├── expenses.html # Add/view expenses
+│
+├── styles.css # Global UI styles
+├── app.js # Core app logic
+├── auth.js # Authentication logic
+├── firebase.js # Firebase config
+│
+└── README.md
+
+
+---
+
+## ⚙️ Setup Instructions
+
+### 1. Clone Repository
+
+```bash
+git clone https://github.com/YOUR_USERNAME/roommate-expense-manager.git
+cd roommate-expense-manager
