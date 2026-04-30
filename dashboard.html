@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard - Roommate Expense Manager</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body data-page="dashboard">
+    <nav class="navbar">
+      <div class="nav-left">
+        <button
+          class="menu-btn"
+          id="menuToggle"
+          type="button"
+          aria-label="Open menu">
+          ☰
+        </button>
+      </div>
+      <div class="nav-center">
+        <div class="brand">
+          <div class="brand-logo-small">RM</div>
+          <span>RoommateExpenses</span>
+        </div>
+      </div>
+      <div class="nav-right">
+        <button
+          class="theme-toggle-btn"
+          id="themeToggle"
+          type="button"
+          aria-label="Toggle theme">
+          <span class="theme-icon">🌙</span>
+        </button>
+      </div>
+    </nav>
+
+    <aside class="sidebar" id="sidebar">
+      <div class="brand-area">
+        <div class="mini-logo">RM</div>
+        <span>RoommateExpenses</span>
+      </div>
+
+      <div class="sidebar-profile">
+        <span class="label">Signed in as</span>
+        <div class="value" id="userName">User</div>
+      </div>
+
+      <ul class="nav-links">
+        <li><a href="dashboard.html" class="active">📊 Dashboard</a></li>
+        <li><a href="roommates.html">👥 Roommates</a></li>
+        <li><a href="expenses.html">💰 Expenses</a></li>
+      </ul>
+
+      <div class="sidebar-footer">
+        <button data-logout class="btn btn-danger btn-sm" type="button">
+          Logout
+        </button>
+      </div>
+    </aside>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <main class="page-shell">
+      <section class="main-content">
+        <div class="page-header">
+          <h2>Dashboard</h2>
+          <p>Overview of shared finances for this month</p>
+        </div>
+
+        <div id="messageBar" class="message-bar hidden"></div>
+
+        <div class="grid-4">
+          <div class="glass-card stat-card blue">
+            <h6>Total Expense</h6>
+            <div class="value" id="dashboardTotalValue">₹0.00</div>
+          </div>
+          <div class="glass-card stat-card">
+            <h6>Entries</h6>
+            <div class="value" id="dashboardEntriesValue">0</div>
+          </div>
+          <div class="glass-card stat-card orange">
+            <h6>Avg Entry</h6>
+            <div class="value" id="dashboardAverageValue">₹0.00</div>
+          </div>
+          <div class="glass-card stat-card green">
+            <h6>Roommates</h6>
+            <div class="value" id="dashboardRoommatesValue">0</div>
+          </div>
+        </div>
+
+        <section class="glass-card" style="margin-bottom: 1rem">
+          <h3 style="margin-bottom: 1rem">Net Balance Summary</h3>
+          <div class="table-wrap">
+            <table class="custom-table">
+              <thead>
+                <tr>
+                  <th>Person</th>
+                  <th>Paid</th>
+                  <th>Consumed (Share)</th>
+                  <th>Net Balance</th>
+                </tr>
+              </thead>
+              <tbody id="summaryTableBody">
+                <tr>
+                  <td colspan="4" class="empty-state">Loading...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="glass-card" style="margin-bottom: 1rem">
+          <h3 style="margin-bottom: 1rem">Who Owes Whom</h3>
+          <div id="settlementList" class="settlement-list">
+            <p class="empty-note">Loading...</p>
+          </div>
+        </section>
+
+        <section class="glass-card">
+          <h3 style="margin-bottom: 1rem">Recent Expenses</h3>
+          <div class="table-wrap">
+            <table class="custom-table">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Category</th>
+                  <th>Amount</th>
+                  <th>Members</th>
+                </tr>
+              </thead>
+              <tbody id="recentExpenseTableBody">
+                <tr>
+                  <td colspan="4" class="empty-state">No recent expenses</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </section>
+    </main>
+    <footer class="app-footer">
+      <div class="footer-content">
+        <span
+          >© 2026 Powered by <strong>Acess Meditech</strong> •
+          RoommateExpensesManager</span
+        >
+      </div>
+    </footer>
+    <script type="module" src="app.js"></script>
+  </body>
+</html>

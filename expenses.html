@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Expenses - Roommate Expense Manager</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  </head>
+  <body data-page="expenses">
+    <nav class="navbar">
+      <div class="nav-left">
+        <button
+          class="menu-btn"
+          id="menuToggle"
+          type="button"
+          aria-label="Open menu">
+          ☰
+        </button>
+      </div>
+      <div class="nav-center">
+        <div class="brand">
+          <div class="brand-logo-small">RM</div>
+          <span>RoommateExpenses</span>
+        </div>
+      </div>
+      <div class="nav-right">
+        <button
+          class="theme-toggle-btn"
+          id="themeToggle"
+          type="button"
+          aria-label="Toggle theme">
+          <span class="theme-icon">🌙</span>
+        </button>
+      </div>
+    </nav>
+
+    <aside class="sidebar" id="sidebar">
+      <div class="brand-area">
+        <div class="mini-logo">RM</div>
+        <span>RoommateExpenses</span>
+      </div>
+
+      <div class="sidebar-profile">
+        <span class="label">Signed in as</span>
+        <div class="value" id="userName">User</div>
+      </div>
+
+      <ul class="nav-links">
+        <li><a href="dashboard.html">📊 Dashboard</a></li>
+        <li><a href="roommates.html">👥 Roommates</a></li>
+        <li><a href="expenses.html" class="active">💰 Expenses</a></li>
+      </ul>
+
+      <div class="sidebar-footer">
+        <button data-logout class="btn btn-danger btn-sm" type="button">
+          Logout
+        </button>
+      </div>
+    </aside>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <main class="page-shell">
+      <section class="main-content">
+        <div class="page-header">
+          <h2>Expenses</h2>
+          <p>Manage all shared expenses and export monthly records</p>
+        </div>
+
+        <div id="messageBar" class="message-bar hidden"></div>
+
+        <section
+          class="glass-card expense-form-card"
+          style="margin-bottom: 1rem">
+          <h3 id="formTitle" style="margin-bottom: 1rem">Add Expense</h3>
+          <form id="expenseForm">
+            <input type="hidden" id="expenseId" />
+            <div
+              class="grid-4"
+              style="
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+                margin-bottom: 1rem;
+              ">
+              <div>
+                <label class="form-label" for="expenseAmount">Amount (₹)</label>
+                <input
+                  type="number"
+                  id="expenseAmount"
+                  step="0.01"
+                  min="0.01"
+                  class="form-control"
+                  placeholder="0.00"
+                  required />
+              </div>
+              <div>
+                <label class="form-label" for="expenseDate">Date</label>
+                <input
+                  type="date"
+                  id="expenseDate"
+                  class="form-control"
+                  required />
+              </div>
+              <div>
+                <label class="form-label" for="expenseCategory">Category</label>
+                <input
+                  type="text"
+                  id="expenseCategory"
+                  class="form-control"
+                  placeholder="e.g. veggies, DMART - Individual"
+                  required />
+              </div>
+            </div>
+
+            <div style="margin-bottom: 1rem">
+              <label class="form-label">Members Sharing</label>
+              <div id="expenseMembersList" class="member-chips">
+                <span class="empty-note">Loading roommates...</span>
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary" id="submitBtn">
+                Save Expense
+              </button>
+              <button
+                type="button"
+                class="btn btn-outline"
+                id="cancelBtn"
+                style="display: none">
+                Cancel
+              </button>
+            </div>
+          </form>
+        </section>
+
+        <section class="glass-card">
+          <div
+            class="filter-row"
+            style="justify-content: space-between; margin-bottom: 1rem">
+            <div class="filter-row">
+              <input
+                type="month"
+                id="monthFilter"
+                class="form-control"
+                style="width: auto" />
+              <button
+                class="btn btn-primary btn-sm"
+                id="exportExcelBtn"
+                type="button">
+                📥 Export Excel
+              </button>
+            </div>
+            <div class="filter-row">
+              <span class="pill"
+                >Total: <strong id="totalExpenseValue">₹0.00</strong></span
+              >
+              <span class="pill"
+                ><span id="entryCountValue">0</span> Entries</span
+              >
+            </div>
+          </div>
+
+          <div class="table-wrap">
+            <table class="custom-table">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Category</th>
+                  <th>Members</th>
+                  <th>Amount</th>
+                  <th>Share/Person</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="expenseTableBody">
+                <tr>
+                  <td colspan="6" class="empty-state">No expenses found</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </section>
+    </main>
+    <footer class="app-footer">
+      <div class="footer-content">
+        <span
+          >© 2026 Powered by <strong>Acess Meditech</strong> •
+          RoommateExpensesManager</span
+        >
+      </div>
+    </footer>
+    <script type="module" src="app.js"></script>
+  </body>
+</html>

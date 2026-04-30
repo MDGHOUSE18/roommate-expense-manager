@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Roommates - Roommate Expense Manager</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body data-page="roommates">
+    <nav class="navbar">
+      <div class="nav-left">
+        <button
+          class="menu-btn"
+          id="menuToggle"
+          type="button"
+          aria-label="Open menu">
+          ☰
+        </button>
+      </div>
+      <div class="nav-center">
+        <div class="brand">
+          <div class="brand-logo-small">RM</div>
+          <span>RoommateExpenses</span>
+        </div>
+      </div>
+      <div class="nav-right">
+        <button
+          class="theme-toggle-btn"
+          id="themeToggle"
+          type="button"
+          aria-label="Toggle theme">
+          <span class="theme-icon">🌙</span>
+        </button>
+      </div>
+    </nav>
+
+    <aside class="sidebar" id="sidebar">
+      <div class="brand-area">
+        <div class="mini-logo">RM</div>
+        <span>RoommateExpenses</span>
+      </div>
+
+      <div class="sidebar-profile">
+        <span class="label">Signed in as</span>
+        <div class="value" id="userName">User</div>
+      </div>
+
+      <ul class="nav-links">
+        <li><a href="dashboard.html">📊 Dashboard</a></li>
+        <li><a href="roommates.html" class="active">👥 Roommates</a></li>
+        <li><a href="expenses.html">💰 Expenses</a></li>
+      </ul>
+
+      <div class="sidebar-footer">
+        <button data-logout class="btn btn-danger btn-sm" type="button">
+          Logout
+        </button>
+      </div>
+    </aside>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <main class="page-shell">
+      <section class="main-content">
+        <div class="page-header">
+          <h2>Roommates</h2>
+          <p>Manage the people who share expenses</p>
+        </div>
+
+        <div id="messageBar" class="message-bar hidden"></div>
+
+        <section class="glass-card" style="margin-bottom: 1rem">
+          <h3 style="margin-bottom: 1rem">Add Roommate</h3>
+          <form id="roommateForm" class="form-actions">
+            <div style="flex: 1; min-width: 220px">
+              <label class="form-label" for="roommateName">Roommate Name</label>
+              <input
+                type="text"
+                id="roommateName"
+                class="form-control"
+                placeholder="Enter name"
+                required />
+            </div>
+            <button type="submit" class="btn btn-primary">Add</button>
+          </form>
+        </section>
+
+        <section class="glass-card">
+          <h3 style="margin-bottom: 1rem">
+            Current Roommates (<span id="roommateCount">0</span>)
+          </h3>
+          <div id="roommateList" class="roommates-grid">
+            <div class="empty-state">No roommates added yet</div>
+          </div>
+        </section>
+      </section>
+    </main>
+    <footer class="app-footer">
+      <div class="footer-content">
+        <span
+          >© 2026 Powered by <strong>Acess Meditech</strong> •
+          RoommateExpensesManager</span
+        >
+      </div>
+    </footer>
+    <script type="module" src="app.js"></script>
+  </body>
+</html>
