@@ -7,6 +7,7 @@ Built using **HTML, CSS, Vanilla JavaScript**, and **Firebase (Auth + Firestore)
 ---
 
 ## 🚀 Live Demo
+
 👉 https://YOUR_USERNAME.github.io/roommate-expense-manager/
 
 ---
@@ -43,6 +44,7 @@ Built using **HTML, CSS, Vanilla JavaScript**, and **Firebase (Auth + Firestore)
 ---
 
 ## 📂 Project Structure
+
 roommate-expense-manager/
 │
 ├── index.html # Login page
@@ -57,7 +59,6 @@ roommate-expense-manager/
 │
 └── README.md
 
-
 ---
 
 ## ⚙️ Setup Instructions
@@ -67,3 +68,4 @@ roommate-expense-manager/
 ```bash
 git clone https://github.com/YOUR_USERNAME/roommate-expense-manager.git
 cd roommate-expense-manager
+```
