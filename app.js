@@ -91,7 +91,10 @@ function showMessage(text, type = "info") {
   els.messageBar.textContent = text;
   els.messageBar.classList.remove("hidden");
   clearTimeout(showMessage._t);
-  showMessage._t = setTimeout(() => els.messageBar.classList.add("hidden"), 3500);
+  showMessage._t = setTimeout(
+    () => els.messageBar.classList.add("hidden"),
+    3500,
+  );
 }
 
 function getUserPath(uid, col) {
@@ -100,7 +103,9 @@ function getUserPath(uid, col) {
 
 function stopListeners() {
   state.unsubs.forEach((u) => {
-    try { u(); } catch (_) {}
+    try {
+      u();
+    } catch (_) {}
   });
   state.unsubs = [];
 }
@@ -134,7 +139,8 @@ function initTheme() {
 }
 
 function toggleTheme() {
-  const next = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+  const next =
+    document.documentElement.dataset.theme === "dark" ? "light" : "dark";
   applyTheme(next);
   if (els.themeToggle) {
     els.themeToggle.classList.remove("spin");
@@ -165,7 +171,11 @@ function toggleSidebar() {
 function setActiveNavLink() {
   document.querySelectorAll(".nav-links a").forEach((a) => {
     const href = a.getAttribute("href") || "";
-    a.classList.toggle("active", href.includes(`${pageName}.html`) || (pageName === "auth" && href.includes("index.html")));
+    a.classList.toggle(
+      "active",
+      href.includes(`${pageName}.html`) ||
+        (pageName === "auth" && href.includes("index.html")),
+    );
   });
 }
 
@@ -180,7 +190,8 @@ function showUserLabel(user) {
 
 if (els.themeToggle) els.themeToggle.addEventListener("click", toggleTheme);
 if (els.menuToggle) els.menuToggle.addEventListener("click", toggleSidebar);
-if (els.sidebarOverlay) els.sidebarOverlay.addEventListener("click", closeSidebar);
+if (els.sidebarOverlay)
+  els.sidebarOverlay.addEventListener("click", closeSidebar);
 
 document.addEventListener("click", (e) => {
   if (!els.sidebar || !els.sidebar.classList.contains("is-open")) return;
@@ -223,8 +234,8 @@ async function startUserListeners(uid) {
       (snap) => {
         state.roommates = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
         renderAll();
-      }
-    )
+      },
+    ),
   );
 
   state.unsubs.push(
@@ -233,8 +244,8 @@ async function startUserListeners(uid) {
       (snap) => {
         state.expenses = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
         renderAll();
-      }
-    )
+      },
+    ),
   );
 }
 
@@ -278,11 +289,14 @@ async function handleAddExpense(e) {
   const amount = Number(els.expenseAmount?.value);
   const date = els.expenseDate?.value || todayISO();
   const category = els.expenseCategory?.value.trim();
-  const memberIds = Array.from(els.expenseMembersList?.querySelectorAll("input:checked") || []).map((i) => i.value);
+  const memberIds = Array.from(
+    els.expenseMembersList?.querySelectorAll("input:checked") || [],
+  ).map((i) => i.value);
 
   if (!amount || amount <= 0) return showMessage("Invalid amount.", "error");
   if (!category) return showMessage("Category is required.", "error");
-  if (!memberIds.length) return showMessage("Select at least one member.", "error");
+  if (!memberIds.length)
+    return showMessage("Select at least one member.", "error");
 
   const payer = currentUserPayer();
   const map = new Map(state.roommates.map((r) => [r.id, r.name]));
@@ -313,7 +327,9 @@ async function handleAddExpense(e) {
       if (els.expenseAmount) els.expenseAmount.value = "";
       if (els.expenseCategory) els.expenseCategory.value = "";
       if (els.expenseMembersList) {
-        els.expenseMembersList.querySelectorAll("input").forEach((i) => (i.checked = false));
+        els.expenseMembersList
+          .querySelectorAll("input")
+          .forEach((i) => (i.checked = false));
       }
       autoSelectDefaultMembers();
     }
@@ -360,7 +376,9 @@ function handleEditExpense(id) {
   }
 
   enterEditMode();
-  document.querySelector(".expense-form-card")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  document
+    .querySelector(".expense-form-card")
+    ?.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
 function resetExpenseForm() {
@@ -380,7 +398,9 @@ function filteredExpenses() {
 
 function getAllMembersForUI() {
   const me = currentUserPayer();
-  return me ? [{ id: me.id, name: me.name, isYou: true }, ...state.roommates] : state.roommates;
+  return me
+    ? [{ id: me.id, name: me.name, isYou: true }, ...state.roommates]
+    : state.roommates;
 }
 
 function autoSelectDefaultMembers() {
@@ -402,62 +422,87 @@ function renderDashboard() {
   const exp = state.expenses.filter((e) => e.monthKey === currentMonthKey);
   const total = exp.reduce((sum, item) => sum + Number(item.amount || 0), 0);
 
-  if (els.dashboardTotalValue) els.dashboardTotalValue.textContent = formatMoney(total);
-  if (els.dashboardRoommatesValue) els.dashboardRoommatesValue.textContent = getAllMembersForUI().length;
-  if (els.dashboardEntriesValue) els.dashboardEntriesValue.textContent = exp.length;
+  if (els.dashboardTotalValue)
+    els.dashboardTotalValue.textContent = formatMoney(total);
+  if (els.dashboardRoommatesValue)
+    els.dashboardRoommatesValue.textContent = getAllMembersForUI().length;
+  if (els.dashboardEntriesValue)
+    els.dashboardEntriesValue.textContent = exp.length;
   if (els.dashboardAverageValue) {
-    els.dashboardAverageValue.textContent = formatMoney(exp.length ? total / exp.length : 0);
+    els.dashboardAverageValue.textContent = formatMoney(
+      exp.length ? total / exp.length : 0,
+    );
   }
 
   if (els.recentExpenseTableBody) {
-    els.recentExpenseTableBody.innerHTML = exp.slice(0, 6).map((e) => `
+    els.recentExpenseTableBody.innerHTML = exp
+      .slice(0, 6)
+      .map(
+        (e) => `
       <tr>
         <td>${e.date || "-"}</td>
         <td>${e.category || "-"}</td>
         <td>${formatMoney(e.amount)}</td>
         <td>${(e.memberNames || []).join(", ") || "-"}</td>
       </tr>
-    `).join("");
+    `,
+      )
+      .join("");
 
     if (!exp.length) {
-      els.recentExpenseTableBody.innerHTML = '<tr><td colspan="4" class="empty-state">No recent expenses</td></tr>';
+      els.recentExpenseTableBody.innerHTML =
+        '<tr><td colspan="4" class="empty-state">No recent expenses</td></tr>';
     }
   }
 
   const summary = computeSummary(exp);
   if (els.summaryTableBody) {
-    els.summaryTableBody.innerHTML = summary.map((r) => `
+    els.summaryTableBody.innerHTML = summary
+      .map(
+        (r) => `
       <tr>
         <td>${r.name}</td>
         <td>${formatMoney(r.paid)}</td>
         <td>${formatMoney(r.share)}</td>
         <td class="${r.net >= 0 ? "text-green" : "text-red"}">${formatMoney(r.net)}</td>
       </tr>
-    `).join("");
+    `,
+      )
+      .join("");
 
     if (!summary.length) {
-      els.summaryTableBody.innerHTML = '<tr><td colspan="4" class="empty-state">No data</td></tr>';
+      els.summaryTableBody.innerHTML =
+        '<tr><td colspan="4" class="empty-state">No data</td></tr>';
     }
   }
 
   if (els.settlementList) {
     const settle = computeSettlements(summary);
-    els.settlementList.innerHTML = settle.length ? settle.map((s) => `
+    els.settlementList.innerHTML = settle.length
+      ? settle
+          .map(
+            (s) => `
       <div class="settlement-card">
         <span>${s.from} → <strong>${s.to}</strong></span>
         <span class="pill pill-success">${formatMoney(s.amount)}</span>
       </div>
-    `).join("") : '<p class="empty-note">All settled up! 🎉</p>';
+    `,
+          )
+          .join("")
+      : '<p class="empty-note">All settled up! 🎉</p>';
   }
 }
 
 function renderRoommates() {
-  if (els.roommateCount) els.roommateCount.textContent = getAllMembersForUI().length;
+  if (els.roommateCount)
+    els.roommateCount.textContent = getAllMembersForUI().length;
 
   if (els.roommateList) {
     const members = getAllMembersForUI();
 
-    els.roommateList.innerHTML = members.map((r) => `
+    els.roommateList.innerHTML = members
+      .map(
+        (r) => `
       <div class="roommate-card">
         <div class="roommate-info">
           <div class="avatar">${(r.name || "?").slice(0, 1).toUpperCase()}</div>
@@ -468,24 +513,32 @@ function renderRoommates() {
         </div>
         ${r.isYou ? '<span class="pill">Primary</span>' : `<button class="btn btn-danger btn-sm" data-delete-roommate="${r.id}">Delete</button>`}
       </div>
-    `).join("");
+    `,
+      )
+      .join("");
 
     if (!members.length) {
-      els.roommateList.innerHTML = '<div class="empty-state">No roommates added yet</div>';
+      els.roommateList.innerHTML =
+        '<div class="empty-state">No roommates added yet</div>';
     }
   }
 
   if (els.expenseMembersList) {
     const members = getAllMembersForUI();
-    els.expenseMembersList.innerHTML = members.map((r) => `
+    els.expenseMembersList.innerHTML = members
+      .map(
+        (r) => `
       <label class="member-chip">
         <input type="checkbox" value="${r.id}" ${r.isYou ? "checked" : ""}>
         <span>${r.name}${r.isYou ? " (You)" : ""}</span>
       </label>
-    `).join("");
+    `,
+      )
+      .join("");
 
     if (!members.length) {
-      els.expenseMembersList.innerHTML = '<span class="empty-note">Add roommates first</span>';
+      els.expenseMembersList.innerHTML =
+        '<span class="empty-note">Add roommates first</span>';
     } else {
       autoSelectDefaultMembers();
     }
@@ -496,13 +549,17 @@ function renderExpenses() {
   const exp = filteredExpenses();
 
   if (els.totalExpenseValue) {
-    els.totalExpenseValue.textContent = formatMoney(exp.reduce((sum, item) => sum + Number(item.amount || 0), 0));
+    els.totalExpenseValue.textContent = formatMoney(
+      exp.reduce((sum, item) => sum + Number(item.amount || 0), 0),
+    );
   }
 
   if (els.entryCountValue) els.entryCountValue.textContent = exp.length;
 
   if (els.expenseTableBody) {
-    els.expenseTableBody.innerHTML = exp.map((e) => `
+    els.expenseTableBody.innerHTML = exp
+      .map(
+        (e) => `
       <tr>
         <td>${e.date || "-"}</td>
         <td>${e.category || "-"}</td>
@@ -514,10 +571,13 @@ function renderExpenses() {
           <button class="btn btn-danger btn-sm" data-delete-expense="${e.id}">Delete</button>
         </td>
       </tr>
-    `).join("");
+    `,
+      )
+      .join("");
 
     if (!exp.length) {
-      els.expenseTableBody.innerHTML = '<tr><td colspan="6" class="empty-state">No expenses found for this month</td></tr>';
+      els.expenseTableBody.innerHTML =
+        '<tr><td colspan="6" class="empty-state">No expenses found for this month</td></tr>';
     }
   }
 }
@@ -590,7 +650,9 @@ function exportExcel() {
     return;
   }
 
-  const rows = filteredExpenses();
+  const rows = filteredExpenses().sort((a, b) =>
+    (a.date || "").localeCompare(b.date || ""),
+  );
   const members = getAllMembersForUI();
   const header = ["Date", "Category", "Amount", ...members.map((m) => m.name)];
   const data = [header];
@@ -623,17 +685,26 @@ function exportExcel() {
     data.push(row);
   });
 
-  const totalRow = ["", "Total", round2(totals.amount), ...members.map((m) => round2(totals.memberTotals[m.name] || 0))];
+  const totalRow = [
+    "",
+    "Total",
+    round2(totals.amount),
+    ...members.map((m) => round2(totals.memberTotals[m.name] || 0)),
+  ];
   data.push(totalRow);
 
   const ws = XLSX.utils.aoa_to_sheet(data);
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, "Expenses");
-  XLSX.writeFile(wb, `expenses-${els.monthFilter?.value || currentMonthKey}.xlsx`);
+  XLSX.writeFile(
+    wb,
+    `expenses-${els.monthFilter?.value || currentMonthKey}.xlsx`,
+  );
   showMessage("Excel exported.", "success");
 }
 
-if (els.roommateForm) els.roommateForm.addEventListener("submit", handleAddRoommate);
+if (els.roommateForm)
+  els.roommateForm.addEventListener("submit", handleAddRoommate);
 
 if (els.roommateList) {
   els.roommateList.addEventListener("click", (e) => {
@@ -642,7 +713,8 @@ if (els.roommateList) {
   });
 }
 
-if (els.expenseForm) els.expenseForm.addEventListener("submit", handleAddExpense);
+if (els.expenseForm)
+  els.expenseForm.addEventListener("submit", handleAddExpense);
 
 if (els.expenseTableBody) {
   els.expenseTableBody.addEventListener("click", (e) => {
@@ -653,7 +725,8 @@ if (els.expenseTableBody) {
   });
 }
 
-if (els.exportExcelBtn) els.exportExcelBtn.addEventListener("click", exportExcel);
+if (els.exportExcelBtn)
+  els.exportExcelBtn.addEventListener("click", exportExcel);
 if (els.monthFilter) els.monthFilter.addEventListener("change", renderExpenses);
 if (els.cancelBtn) els.cancelBtn.addEventListener("click", resetExpenseForm);
 
