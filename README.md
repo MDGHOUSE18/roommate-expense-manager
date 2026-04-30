@@ -7,8 +7,7 @@ Built using **HTML, CSS, Vanilla JavaScript**, and **Firebase (Auth + Firestore)
 ---
 
 ## 🚀 Live Demo
-
-👉 https://YOUR_USERNAME.github.io/roommate-expense-manager/
+👉 https://mdghouse18.github.io/roommate-expense-manager/
 
 ---
 
@@ -17,55 +16,67 @@ Built using **HTML, CSS, Vanilla JavaScript**, and **Firebase (Auth + Firestore)
 - 🔐 Username-based login (Firebase Authentication)
 - 👥 Manage roommates dynamically
 - 💰 Add & track shared expenses
-- 🧾 Category-based expense tracking (no payer selection required)
+- 🧾 Category-based expense tracking
 - ⚖️ Automatic expense splitting
-- 📊 Monthly dashboard with:
-  - Total expenses
-  - Average spend
-  - Entry count
-  - Net balance per person
+- 📊 Monthly dashboard (total, avg, entries, balances)
 - 🤝 Settlement calculation (who owes whom)
-- 📥 Excel export (sheet-style format with totals)
-- 🌙 Light / Dark mode toggle with animation
-- 📱 Fully responsive (mobile-first UI)
-- 🎯 Default user automatically included in splits
+- 📥 Excel export (sheet-style format)
+- 🌙 Light / Dark mode
+- 📱 Fully responsive UI
+- 🎯 Default user included automatically
 
 ---
 
 ## 🧱 Tech Stack
 
-- **Frontend:** HTML5, CSS3, Vanilla JavaScript (ES Modules)
-- **Backend:** Firebase Authentication + Firestore
-- **Hosting:** GitHub Pages
-- **Libraries:**
-  - Firebase SDK (v9 modular)
-  - SheetJS (XLSX export)
+- HTML5, CSS3, JavaScript (ES Modules)
+- Firebase Authentication + Firestore
+- GitHub Pages
+- SheetJS (Excel export)
 
 ---
 
 ## 📂 Project Structure
 
+```
 roommate-expense-manager/
 │
-├── index.html # Login page
-├── dashboard.html # Overview & summary
-├── roommates.html # Manage members
-├── expenses.html # Add/view expenses
+├── index.html
+├── dashboard.html
+├── roommates.html
+├── expenses.html
 │
-├── styles.css # Global UI styles
-├── app.js # Core app logic
-├── auth.js # Authentication logic
-├── firebase.js # Firebase config
+├── styles.css
+├── app.js
+├── auth.js
+├── firebase.js
 │
 └── README.md
+```
 
 ---
 
-## ⚙️ Setup Instructions
+## ⚙️ Setup
 
-### 1. Clone Repository
-
-```bash
-git clone https://github.com/YOUR_USERNAME/roommate-expense-manager.git
-cd roommate-expense-manager
 ```
+git clone https://github.com/mdghouse18/roommate-expense-manager.git
+cd roommate-expense-manager
+npx serve .
+```
+---
+
+## 👨‍💻 Author
+
+Ghouse
+
+---
+
+## 🏢 Powered By
+
+Ghouse
+
+---
+
+## 📄 License
+
+For personal and internal use.
