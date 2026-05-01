@@ -20,7 +20,7 @@ if (els.authForm) {
       return;
     }
 
-    const email = `${username.toLowerCase()}@roommate.local`;
+    const email = username.toLowerCase();
     const button = els.authForm.querySelector("button[type='submit']");
     const original = button?.textContent || "Login";
 
@@ -37,9 +37,11 @@ if (els.authForm) {
       }, 350);
     } catch (error) {
       let msg = "Invalid username or password.";
-      if (error?.code === "auth/user-not-found") msg = "Account not found. Contact admin.";
+      if (error?.code === "auth/user-not-found")
+        msg = "Account not found. Contact admin.";
       if (error?.code === "auth/wrong-password") msg = "Wrong password.";
-      if (error?.code === "auth/invalid-credential") msg = "Invalid username or password.";
+      if (error?.code === "auth/invalid-credential")
+        msg = "Invalid username or password.";
       showMessage(msg, "error");
     } finally {
       if (button) {
@@ -56,5 +58,8 @@ function showMessage(text, type = "info") {
   els.messageBar.className = `message-bar ${type}`;
   els.messageBar.classList.remove("hidden");
   clearTimeout(showMessage._t);
-  showMessage._t = setTimeout(() => els.messageBar.classList.add("hidden"), 3000);
+  showMessage._t = setTimeout(
+    () => els.messageBar.classList.add("hidden"),
+    3000,
+  );
 }
