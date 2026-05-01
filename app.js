@@ -24,10 +24,12 @@ const els = {
   sidebarOverlay: document.getElementById("sidebarOverlay"),
   userName: document.getElementById("userName"),
   sidebarUserName: document.getElementById("sidebarUserName"),
+
   roommateForm: document.getElementById("roommateForm"),
   roommateName: document.getElementById("roommateName"),
   roommateList: document.getElementById("roommateList"),
   roommateCount: document.getElementById("roommateCount"),
+
   expenseForm: document.getElementById("expenseForm"),
   formTitle: document.getElementById("formTitle"),
   submitBtn: document.getElementById("submitBtn"),
@@ -36,11 +38,19 @@ const els = {
   expenseDate: document.getElementById("expenseDate"),
   expenseCategory: document.getElementById("expenseCategory"),
   expenseMembersList: document.getElementById("expenseMembersList"),
+
+  filterType: document.getElementById("filterType"),
   monthFilter: document.getElementById("monthFilter"),
+  fromDate: document.getElementById("fromDate"),
+  toDate: document.getElementById("toDate"),
+  customDateWrap: document.getElementById("customDateWrap"),
+
   totalExpenseValue: document.getElementById("totalExpenseValue"),
   entryCountValue: document.getElementById("entryCountValue"),
   exportExcelBtn: document.getElementById("exportExcelBtn"),
+  exportPdfBtn: document.getElementById("exportPdfBtn"),
   expenseTableBody: document.getElementById("expenseTableBody"),
+
   recentExpenseTableBody: document.getElementById("recentExpenseTableBody"),
   dashboardTotalValue: document.getElementById("dashboardTotalValue"),
   dashboardRoommatesValue: document.getElementById("dashboardRoommatesValue"),
@@ -48,10 +58,6 @@ const els = {
   dashboardAverageValue: document.getElementById("dashboardAverageValue"),
   summaryTableBody: document.getElementById("summaryTableBody"),
   settlementList: document.getElementById("settlementList"),
-  filterType: document.getElementById("filterType"),
-  fromDate: document.getElementById("fromDate"),
-  toDate: document.getElementById("toDate"),
-  customDateWrap: document.getElementById("customDateWrap"),
 };
 
 const pageName = document.body.dataset.page || "";
@@ -77,6 +83,17 @@ function getMonthKey(date) {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
 }
 
+function getMonthStartISO(date = new Date()) {
+  const d = date instanceof Date ? date : new Date(date);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-01`;
+}
+
+function getMonthEndISO(date = new Date()) {
+  const d = date instanceof Date ? date : new Date(date);
+  const last = new Date(d.getFullYear(), d.getMonth() + 1, 0);
+  return last.toISOString().slice(0, 10);
+}
+
 function formatMoney(v) {
   return new Intl.NumberFormat("en-IN", {
     style: "currency",
@@ -95,10 +112,9 @@ function showMessage(text, type = "info") {
   els.messageBar.textContent = text;
   els.messageBar.classList.remove("hidden");
   clearTimeout(showMessage._t);
-  showMessage._t = setTimeout(
-    () => els.messageBar.classList.add("hidden"),
-    3500,
-  );
+  showMessage._t = setTimeout(() => {
+    els.messageBar.classList.add("hidden");
+  }, 3500);
 }
 
 function getUserPath(uid, col) {
@@ -393,6 +409,27 @@ function resetExpenseForm() {
   exitEditMode();
 }
 
+function updateFilterUI() {
+  const type = els.filterType?.value || "month";
+
+  if (els.monthFilter) {
+    els.monthFilter.style.display = type === "month" ? "inline-block" : "none";
+  }
+
+  if (els.customDateWrap) {
+    els.customDateWrap.style.display = type === "custom" ? "flex" : "none";
+  }
+
+  if (type === "custom") {
+    if (els.fromDate && !els.fromDate.value)
+      els.fromDate.value = getMonthStartISO(new Date());
+    if (els.toDate && !els.toDate.value)
+      els.toDate.value = getMonthEndISO(new Date());
+  }
+
+  renderExpenses();
+}
+
 function filteredExpenses() {
   const filterType = els.filterType?.value || "month";
 
@@ -407,33 +444,14 @@ function filteredExpenses() {
         if (to && e.date > to) return false;
         return true;
       })
-      .sort((a, b) => b.date.localeCompare(a.date));
+      .sort((a, b) => a.date.localeCompare(b.date));
   }
 
   const m = els.monthFilter?.value || currentMonthKey;
   return state.expenses
     .filter((e) => e.monthKey === m)
-    .sort((a, b) => b.date.localeCompare(a.date));
+    .sort((a, b) => a.date.localeCompare(b.date));
 }
-function updateFilterUI() {
-  const type = els.filterType?.value || "month";
-
-  if (els.monthFilter) {
-    els.monthFilter.style.display = type === "month" ? "inline-block" : "none";
-  }
-
-  if (els.customDateWrap) {
-    els.customDateWrap.style.display = type === "custom" ? "flex" : "none";
-  }
-
-  renderExpenses();
-}
-if (els.filterType) els.filterType.addEventListener("change", updateFilterUI);
-if (els.monthFilter) els.monthFilter.addEventListener("change", renderExpenses);
-if (els.fromDate) els.fromDate.addEventListener("change", renderExpenses);
-if (els.toDate) els.toDate.addEventListener("change", renderExpenses);
-if (els.filterType) els.filterType.value = "month";
-if (els.monthFilter) els.monthFilter.value = currentMonthKey;
 
 function getAllMembersForUI() {
   const me = currentUserPayer();
@@ -478,13 +496,13 @@ function renderDashboard() {
       .slice(0, 6)
       .map(
         (e) => `
-      <tr>
-        <td>${e.date || "-"}</td>
-        <td>${e.category || "-"}</td>
-        <td>${formatMoney(e.amount)}</td>
-        <td>${(e.memberNames || []).join(", ") || "-"}</td>
-      </tr>
-    `,
+          <tr>
+            <td>${e.date || "-"}</td>
+            <td>${e.category || "-"}</td>
+            <td>${formatMoney(e.amount)}</td>
+            <td>${(e.memberNames || []).join(", ") || "-"}</td>
+          </tr>
+        `,
       )
       .join("");
 
@@ -499,13 +517,13 @@ function renderDashboard() {
     els.summaryTableBody.innerHTML = summary
       .map(
         (r) => `
-      <tr>
-        <td>${r.name}</td>
-        <td>${formatMoney(r.paid)}</td>
-        <td>${formatMoney(r.share)}</td>
-        <td class="${r.net >= 0 ? "text-green" : "text-red"}">${formatMoney(r.net)}</td>
-      </tr>
-    `,
+          <tr>
+            <td>${r.name}</td>
+            <td>${formatMoney(r.paid)}</td>
+            <td>${formatMoney(r.share)}</td>
+            <td class="${r.net >= 0 ? "text-green" : "text-red"}">${formatMoney(r.net)}</td>
+          </tr>
+        `,
       )
       .join("");
 
@@ -521,11 +539,11 @@ function renderDashboard() {
       ? settle
           .map(
             (s) => `
-      <div class="settlement-card">
-        <span>${s.from} → <strong>${s.to}</strong></span>
-        <span class="pill pill-success">${formatMoney(s.amount)}</span>
-      </div>
-    `,
+              <div class="settlement-card">
+                <span>${s.from} → <strong>${s.to}</strong></span>
+                <span class="pill pill-success">${formatMoney(s.amount)}</span>
+              </div>
+            `,
           )
           .join("")
       : '<p class="empty-note">All settled up! 🎉</p>';
@@ -542,17 +560,21 @@ function renderRoommates() {
     els.roommateList.innerHTML = members
       .map(
         (r) => `
-      <div class="roommate-card">
-        <div class="roommate-info">
-          <div class="avatar">${(r.name || "?").slice(0, 1).toUpperCase()}</div>
-          <div>
-            <div class="roommate-name">${r.name}${r.isYou ? " (You)" : ""}</div>
-            <div class="roommate-sub">${r.isYou ? "Default user" : "Shared member"}</div>
+          <div class="roommate-card">
+            <div class="roommate-info">
+              <div class="avatar">${(r.name || "?").slice(0, 1).toUpperCase()}</div>
+              <div>
+                <div class="roommate-name">${r.name}${r.isYou ? " (You)" : ""}</div>
+                <div class="roommate-sub">${r.isYou ? "Default user" : "Shared member"}</div>
+              </div>
+            </div>
+            ${
+              r.isYou
+                ? '<span class="pill">Primary</span>'
+                : `<button class="btn btn-danger btn-sm" data-delete-roommate="${r.id}">Delete</button>`
+            }
           </div>
-        </div>
-        ${r.isYou ? '<span class="pill">Primary</span>' : `<button class="btn btn-danger btn-sm" data-delete-roommate="${r.id}">Delete</button>`}
-      </div>
-    `,
+        `,
       )
       .join("");
 
@@ -567,11 +589,11 @@ function renderRoommates() {
     els.expenseMembersList.innerHTML = members
       .map(
         (r) => `
-      <label class="member-chip">
-        <input type="checkbox" value="${r.id}" ${r.isYou ? "checked" : ""}>
-        <span>${r.name}${r.isYou ? " (You)" : ""}</span>
-      </label>
-    `,
+          <label class="member-chip">
+            <input type="checkbox" value="${r.id}" ${r.isYou ? "checked" : ""}>
+            <span>${r.name}${r.isYou ? " (You)" : ""}</span>
+          </label>
+        `,
       )
       .join("");
 
@@ -599,24 +621,24 @@ function renderExpenses() {
     els.expenseTableBody.innerHTML = exp
       .map(
         (e) => `
-      <tr>
-        <td>${e.date || "-"}</td>
-        <td>${e.category || "-"}</td>
-        <td>${(e.memberNames || []).join(", ") || "-"}</td>
-        <td>${formatMoney(e.amount)}</td>
-        <td>${formatMoney(e.splitAmountPerPerson)}</td>
-        <td class="action-cell">
-          <button class="btn btn-outline btn-sm" data-edit-expense="${e.id}">Edit</button>
-          <button class="btn btn-danger btn-sm" data-delete-expense="${e.id}">Delete</button>
-        </td>
-      </tr>
-    `,
+          <tr>
+            <td>${e.date || "-"}</td>
+            <td>${e.category || "-"}</td>
+            <td>${(e.memberNames || []).join(", ") || "-"}</td>
+            <td>${formatMoney(e.amount)}</td>
+            <td>${formatMoney(e.splitAmountPerPerson)}</td>
+            <td class="action-cell">
+              <button class="btn btn-outline btn-sm" data-edit-expense="${e.id}">Edit</button>
+              <button class="btn btn-danger btn-sm" data-delete-expense="${e.id}">Delete</button>
+            </td>
+          </tr>
+        `,
       )
       .join("");
 
     if (!exp.length) {
       els.expenseTableBody.innerHTML =
-        '<tr><td colspan="6" class="empty-state">No expenses found for this month</td></tr>';
+        '<tr><td colspan="6" class="empty-state">No expenses found for this filter</td></tr>';
     }
   }
 }
@@ -683,6 +705,66 @@ function computeSettlements(sum) {
   return out;
 }
 
+function getExportLabel() {
+  const type = els.filterType?.value || "month";
+  if (type === "custom") {
+    return `From: ${els.fromDate?.value || "-"}  To: ${els.toDate?.value || "-"}`;
+  }
+  return `Month: ${els.monthFilter?.value || currentMonthKey}`;
+}
+
+function getExportFileName(ext) {
+  const type = els.filterType?.value || "month";
+  if (type === "custom") {
+    const from = els.fromDate?.value || "from";
+    const to = els.toDate?.value || "to";
+    return `expenses-${from}_to_${to}.${ext}`;
+  }
+  return `expenses-${els.monthFilter?.value || currentMonthKey}.${ext}`;
+}
+
+function groupExpenses(expenses) {
+  const map = new Map();
+
+  expenses.forEach((e) => {
+    const key = `${e.date || ""}|${e.category || ""}`;
+
+    if (!map.has(key)) {
+      map.set(key, {
+        date: e.date || "",
+        category: e.category || "",
+        amount: 0,
+        memberShares: {},
+      });
+    }
+
+    const row = map.get(key);
+    row.amount += Number(e.amount || 0);
+
+    const split = Number(e.splitAmountPerPerson || 0);
+    const ids = e.memberIds || [];
+    const names = e.memberNames || [];
+
+    ids.forEach((id, idx) => {
+      const name = names[idx] || id;
+      if (!row.memberShares[id]) {
+        row.memberShares[id] = {
+          name,
+          amount: 0,
+        };
+      }
+      row.memberShares[id].amount += split;
+      row.memberShares[id].name = name;
+    });
+  });
+
+  return Array.from(map.values()).sort((a, b) => {
+    const d = a.date.localeCompare(b.date);
+    if (d !== 0) return d;
+    return a.category.localeCompare(b.category);
+  });
+}
+
 function exportExcel() {
   if (typeof XLSX === "undefined") {
     showMessage("Excel library not loaded.", "error");
@@ -692,7 +774,9 @@ function exportExcel() {
   const rows = filteredExpenses().sort((a, b) =>
     (a.date || "").localeCompare(b.date || ""),
   );
+  const groupedRows = groupExpenses(rows);
   const members = getAllMembersForUI();
+
   const header = ["Date", "Category", "Amount", ...members.map((m) => m.name)];
   const data = [header];
 
@@ -705,18 +789,15 @@ function exportExcel() {
     totals.memberTotals[m.name] = 0;
   });
 
-  rows.forEach((e) => {
-    const row = [e.date || "", e.category || "", Number(e.amount || 0)];
+  groupedRows.forEach((e) => {
+    const row = [e.date || "", e.category || "", round2(e.amount || 0)];
     const amount = Number(e.amount || 0);
-    const memberSet = new Set(e.memberIds || []);
-    const split = round2(amount / (e.memberIds?.length || 1));
 
     members.forEach((m) => {
-      if (memberSet.has(m.id)) {
-        row.push(split);
-        totals.memberTotals[m.name] += split;
-      } else {
-        row.push("");
+      const memberShare = e.memberShares[m.id]?.amount || "";
+      row.push(memberShare === "" ? "" : round2(memberShare));
+      if (memberShare !== "") {
+        totals.memberTotals[m.name] += Number(memberShare);
       }
     });
 
@@ -724,22 +805,111 @@ function exportExcel() {
     data.push(row);
   });
 
-  const totalRow = [
+  data.push([
     "",
     "Total",
     round2(totals.amount),
     ...members.map((m) => round2(totals.memberTotals[m.name] || 0)),
-  ];
-  data.push(totalRow);
+  ]);
 
   const ws = XLSX.utils.aoa_to_sheet(data);
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, "Expenses");
-  XLSX.writeFile(
-    wb,
-    `expenses-${els.monthFilter?.value || currentMonthKey}.xlsx`,
-  );
+
+  XLSX.writeFile(wb, getExportFileName("xlsx"));
   showMessage("Excel exported.", "success");
+}
+
+function exportPDF() {
+  if (!window.jspdf || !window.jspdf.jsPDF) {
+    showMessage("PDF library not loaded.", "error");
+    return;
+  }
+
+  const jsPDF = window.jspdf.jsPDF;
+  const doc = new jsPDF("landscape");
+
+  const rows = filteredExpenses().sort((a, b) =>
+    (a.date || "").localeCompare(b.date || ""),
+  );
+  const groupedRows = groupExpenses(rows);
+  const members = getAllMembersForUI();
+
+  if (typeof doc.autoTable !== "function") {
+    showMessage("PDF table plugin not loaded.", "error");
+    return;
+  }
+
+  const head = [["Date", "Category", "Amount", ...members.map((m) => m.name)]];
+  const body = [];
+
+  const totals = {
+    amount: 0,
+    memberTotals: {},
+  };
+
+  members.forEach((m) => {
+    totals.memberTotals[m.name] = 0;
+  });
+
+  groupedRows.forEach((e) => {
+    const row = [e.date || "", e.category || "", round2(e.amount || 0)];
+    const amount = Number(e.amount || 0);
+
+    members.forEach((m) => {
+      const share = e.memberShares[m.id]?.amount || "";
+      row.push(share === "" ? "" : round2(share));
+      if (share !== "") {
+        totals.memberTotals[m.name] += Number(share);
+      }
+    });
+
+    totals.amount += amount;
+    body.push(row);
+  });
+
+  body.push([
+    "",
+    "Total",
+    round2(totals.amount),
+    ...members.map((m) => round2(totals.memberTotals[m.name] || 0)),
+  ]);
+
+  doc.setFontSize(14);
+  doc.text("Roommate Expenses Report", 14, 15);
+
+  doc.setFontSize(10);
+  doc.text(getExportLabel(), 14, 22);
+
+  doc.autoTable({
+    head,
+    body,
+    startY: 28,
+    styles: {
+      fontSize: 8,
+      cellPadding: 2,
+      overflow: "linebreak",
+      valign: "middle",
+    },
+    headStyles: {
+      fillColor: [99, 102, 241],
+      textColor: 255,
+      fontStyle: "bold",
+    },
+    didParseCell: function (hookData) {
+      if (
+        hookData.section === "body" &&
+        hookData.row.index === body.length - 1
+      ) {
+        hookData.cell.styles.fontStyle = "bold";
+        hookData.cell.styles.fillColor = [226, 232, 240];
+        hookData.cell.styles.textColor = 20;
+      }
+    },
+  });
+
+  doc.save(getExportFileName("pdf"));
+  showMessage("PDF exported.", "success");
 }
 
 if (els.roommateForm)
@@ -766,7 +936,11 @@ if (els.expenseTableBody) {
 
 if (els.exportExcelBtn)
   els.exportExcelBtn.addEventListener("click", exportExcel);
+if (els.exportPdfBtn) els.exportPdfBtn.addEventListener("click", exportPDF);
+if (els.filterType) els.filterType.addEventListener("change", updateFilterUI);
 if (els.monthFilter) els.monthFilter.addEventListener("change", renderExpenses);
+if (els.fromDate) els.fromDate.addEventListener("change", renderExpenses);
+if (els.toDate) els.toDate.addEventListener("change", renderExpenses);
 if (els.cancelBtn) els.cancelBtn.addEventListener("click", resetExpenseForm);
 
 els.logoutBtns.forEach((btn) => {

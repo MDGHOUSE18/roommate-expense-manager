@@ -6,6 +6,8 @@
     <title>Expenses - Roommate Expense Manager</title>
     <link rel="stylesheet" href="styles.css" />
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
   </head>
   <body data-page="expenses">
     <nav class="navbar">
@@ -58,13 +60,14 @@
         </button>
       </div>
     </aside>
+
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
     <main class="page-shell">
       <section class="main-content">
         <div class="page-header">
           <h2>Expenses</h2>
-          <p>Manage all shared expenses and export monthly records</p>
+          <p>Manage all shared expenses and export monthly or custom records</p>
         </div>
 
         <div id="messageBar" class="message-bar hidden"></div>
@@ -134,35 +137,10 @@
         </section>
 
         <section class="glass-card">
-          <!-- <div
-            class="filter-row"
-            style="justify-content: space-between; margin-bottom: 1rem">
-            <div class="filter-row">
-              <input
-                type="month"
-                id="monthFilter"
-                class="form-control"
-                style="width: auto" />
-              <button
-                class="btn btn-primary btn-sm"
-                id="exportExcelBtn"
-                type="button">
-                📥 Export Excel
-              </button>
-            </div>
-            <div class="filter-row">
-              <span class="pill"
-                >Total: <strong id="totalExpenseValue">₹0.00</strong></span
-              >
-              <span class="pill"
-                ><span id="entryCountValue">0</span> Entries</span
-              >
-            </div>
-          </div> -->
           <div
             class="filter-row"
             style="justify-content: space-between; margin-bottom: 1rem">
-            <div class="filter-row">
+            <div class="filter-row" style="flex-wrap: wrap">
               <select id="filterType" class="form-control" style="width: auto">
                 <option value="month">Month Base</option>
                 <option value="custom">Custom Date</option>
@@ -174,19 +152,27 @@
                 class="form-control"
                 style="width: auto" />
 
-              <div id="customDateWrap" class="filter-row" style="display: none">
-                <label for="">From</label>
-                <input
-                  type="date"
-                  id="fromDate"
-                  class="form-control"
-                  style="width: auto" />
-                <label for="">To</label>
-                <input
-                  type="date"
-                  id="toDate"
-                  class="form-control"
-                  style="width: auto" />
+              <div
+                id="customDateWrap"
+                class="filter-row"
+                style="display: none; flex-wrap: wrap">
+                <div class="filter-field">
+                  <label for="fromDate">From Date</label>
+                  <input
+                    type="date"
+                    id="fromDate"
+                    class="form-control"
+                    style="width: auto" />
+                </div>
+
+                <div class="filter-field">
+                  <label for="toDate">To Date</label>
+                  <input
+                    type="date"
+                    id="toDate"
+                    class="form-control"
+                    style="width: auto" />
+                </div>
               </div>
 
               <button
@@ -194,6 +180,12 @@
                 id="exportExcelBtn"
                 type="button">
                 📥 Export Excel
+              </button>
+              <button
+                class="btn btn-outline btn-sm"
+                id="exportPdfBtn"
+                type="button">
+                📄 Export PDF
               </button>
             </div>
 
@@ -206,6 +198,7 @@
               >
             </div>
           </div>
+
           <div class="table-wrap">
             <table class="custom-table">
               <thead>
@@ -228,6 +221,7 @@
         </section>
       </section>
     </main>
+
     <footer class="app-footer">
       <div class="footer-content">
         <span
@@ -236,6 +230,7 @@
         >
       </div>
     </footer>
+
     <script type="module" src="app.js"></script>
   </body>
 </html>
