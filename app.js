@@ -48,6 +48,10 @@ const els = {
   dashboardAverageValue: document.getElementById("dashboardAverageValue"),
   summaryTableBody: document.getElementById("summaryTableBody"),
   settlementList: document.getElementById("settlementList"),
+  filterType: document.getElementById("filterType"),
+  fromDate: document.getElementById("fromDate"),
+  toDate: document.getElementById("toDate"),
+  customDateWrap: document.getElementById("customDateWrap"),
 };
 
 const pageName = document.body.dataset.page || "";
@@ -390,11 +394,46 @@ function resetExpenseForm() {
 }
 
 function filteredExpenses() {
+  const filterType = els.filterType?.value || "month";
+
+  if (filterType === "custom") {
+    const from = els.fromDate?.value || "";
+    const to = els.toDate?.value || "";
+
+    return state.expenses
+      .filter((e) => {
+        if (!e.date) return false;
+        if (from && e.date < from) return false;
+        if (to && e.date > to) return false;
+        return true;
+      })
+      .sort((a, b) => b.date.localeCompare(a.date));
+  }
+
   const m = els.monthFilter?.value || currentMonthKey;
   return state.expenses
     .filter((e) => e.monthKey === m)
     .sort((a, b) => b.date.localeCompare(a.date));
 }
+function updateFilterUI() {
+  const type = els.filterType?.value || "month";
+
+  if (els.monthFilter) {
+    els.monthFilter.style.display = type === "month" ? "inline-block" : "none";
+  }
+
+  if (els.customDateWrap) {
+    els.customDateWrap.style.display = type === "custom" ? "flex" : "none";
+  }
+
+  renderExpenses();
+}
+if (els.filterType) els.filterType.addEventListener("change", updateFilterUI);
+if (els.monthFilter) els.monthFilter.addEventListener("change", renderExpenses);
+if (els.fromDate) els.fromDate.addEventListener("change", renderExpenses);
+if (els.toDate) els.toDate.addEventListener("change", renderExpenses);
+if (els.filterType) els.filterType.value = "month";
+if (els.monthFilter) els.monthFilter.value = currentMonthKey;
 
 function getAllMembersForUI() {
   const me = currentUserPayer();
@@ -743,6 +782,7 @@ els.logoutBtns.forEach((btn) => {
 
 initTheme();
 setTimeout(() => {
+  updateFilterUI();
   renderAll();
   if (pageName === "expenses") exitEditMode();
 }, 0);

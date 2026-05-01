@@ -134,7 +134,7 @@
         </section>
 
         <section class="glass-card">
-          <div
+          <!-- <div
             class="filter-row"
             style="justify-content: space-between; margin-bottom: 1rem">
             <div class="filter-row">
@@ -158,8 +158,54 @@
                 ><span id="entryCountValue">0</span> Entries</span
               >
             </div>
-          </div>
+          </div> -->
+          <div
+            class="filter-row"
+            style="justify-content: space-between; margin-bottom: 1rem">
+            <div class="filter-row">
+              <select id="filterType" class="form-control" style="width: auto">
+                <option value="month">Month Base</option>
+                <option value="custom">Custom Date</option>
+              </select>
 
+              <input
+                type="month"
+                id="monthFilter"
+                class="form-control"
+                style="width: auto" />
+
+              <div id="customDateWrap" class="filter-row" style="display: none">
+                <label for="">From</label>
+                <input
+                  type="date"
+                  id="fromDate"
+                  class="form-control"
+                  style="width: auto" />
+                <label for="">To</label>
+                <input
+                  type="date"
+                  id="toDate"
+                  class="form-control"
+                  style="width: auto" />
+              </div>
+
+              <button
+                class="btn btn-primary btn-sm"
+                id="exportExcelBtn"
+                type="button">
+                📥 Export Excel
+              </button>
+            </div>
+
+            <div class="filter-row">
+              <span class="pill"
+                >Total: <strong id="totalExpenseValue">₹0.00</strong></span
+              >
+              <span class="pill"
+                ><span id="entryCountValue">0</span> Entries</span
+              >
+            </div>
+          </div>
           <div class="table-wrap">
             <table class="custom-table">
               <thead>
